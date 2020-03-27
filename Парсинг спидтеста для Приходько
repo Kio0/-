@@ -1,0 +1,53 @@
+#coding: UTF-8
+from threading import Thread
+import requests
+import json
+import os
+import random
+import time
+from bs4 import BeautifulSoup as BS
+
+kol=0
+url = 'https://www.speedtest.net/result/'
+adres=[]
+def open_url(url1,url2):  #Функция заходит на сайт и сохраняет данные с него в текстовый файл
+    global kol
+    global url
+    global file
+    while kol<len(adres)-1:
+        time.sleep(0)
+        kol=kol+1
+        kk=kol
+        site=url+str(adres[kol-1]) #формируем адрес соответствующей страницы
+        proc = os.getpid()
+        s = requests.Session()
+        s.get(site)
+
+        data = {}
+        
+        r=s.get(site,data=data)
+        html = BS(r.content,'html.parser')
+        if len(html.text)>300:        
+            stroka=(html.text[html.text.find("window.OOKLA.INIT_DATA") + 33 : ])
+            stroka=(stroka[ : stroka.find("}}")])
+            print(stroka)
+            file.write(str(kk)+' | '+stroka+'\n')
+
+
+
+file=open('parser.txt','w',encoding='utf-8')
+random.seed(version=2)
+for i in range(1000000000,1000100000):
+    adres.append(random.randint(1000000000, 9000000000))
+
+kolPr=1
+Process=[]
+for i in range(kolPr):
+    Process.append('')
+    Process[i] = Thread(target=open_url, args=('GG', 'GG',))
+    Process[i].start()
+
+for i in range(kolPr):
+    Process[i].join()
+
+file.close()
